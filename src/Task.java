@@ -6,11 +6,11 @@ public class Task {
     private final Integer id;
     private Status status;
 
-    public Task(String name, String description, Integer id, Status status) {
+    public Task(String name, String description, Integer id) {
         this.name = name;
         this.description = description;
         this.id = id;
-        this.status = status;
+        status = Status.NEW;
     }
 
     public String getName() {
