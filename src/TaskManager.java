@@ -7,23 +7,19 @@ public class TaskManager {
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
     public HashMap<Integer, Epic> epics = new HashMap<>();
 
-    public Integer setId() {
-        return id++;
-    }
-
     public void createTask(Task task) {
+        task.setId(generateId());
         tasks.put(task.getId(), task);
     }
 
     public void createEpic(Epic epic) {
+        epic.setId(generateId());
         epics.put(epic.getId(), epic);
     }
 
-    public void createSubtask(Subtask subtask, Epic epic) {
-        epic.setSubtaskId(subtask.getId());
-        subtask.setEpicId(epic.getId());
+    public void createSubtask(Subtask subtask) {
+        subtask.setId(generateId());
         subtasks.put(subtask.getId(), subtask);
-        updateEpic(epic);
     }
 
     public void updateTask(Task task) {
@@ -126,6 +122,16 @@ public class TaskManager {
 
     public void deleteTaskById(Integer id) {
         tasks.remove(id);
+    }
+
+    public void addSubtaskToEpic(Subtask subtask, Epic epic) {
+        subtask.setEpicId(epic.getId());
+        epic.setSubtaskId(subtask.getId());
+        updateSubtask(subtask);
+    }
+
+    private Integer generateId() {
+        return id++;
     }
 
     private void updateStatusEpic(Epic epic) {

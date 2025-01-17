@@ -1,8 +1,8 @@
 public class Subtask extends Task {
     private Integer epicId;
 
-    public Subtask(String name, String description, Integer id) {
-        super(name, description, id);
+    public Subtask(String name, String description) {
+        super(name, description);
     }
 
     @Override
