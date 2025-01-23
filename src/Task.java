@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class Task {
+public class Task implements Cloneable {
     private final String name;
     private final String description;
     private Integer id;
@@ -56,5 +56,14 @@ public class Task {
                 ", id=" + id +
                 ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public Task clone() {
+        try {
+            return (Task) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
