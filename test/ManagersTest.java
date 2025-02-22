@@ -21,6 +21,7 @@ class ManagersTest {
     @Test
     void shouldTaskInstancesEqualToGetFromInMemoryHistoryManager() {
         Task task = new Task("Test Init", "task");
+        taskManager.createTask(task);
         historyManager.add(task);
 
         Task task1 = historyManager.getHistory().getFirst();
