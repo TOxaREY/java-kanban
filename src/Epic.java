@@ -14,6 +14,7 @@ public class Epic extends Task {
                 ", description='" + super.getDescription() + '\'' +
                 ", id=" + super.getId() +
                 ", status=" + super.getStatus() +
+                ", subtasksId=" + getSubtasksId() +
                 '}';
     }
 

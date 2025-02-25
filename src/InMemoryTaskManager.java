@@ -175,6 +175,21 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
+    public void restoreTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    @Override
+    public void restoreEpic(Task epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    @Override
+    public void restoreSubtask(Task subtask) {
+        subtasks.put(subtask.getId(), subtask);
+    }
+
     private Integer generateId() {
         return id++;
     }

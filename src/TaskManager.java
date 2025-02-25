@@ -43,4 +43,10 @@ public interface TaskManager {
     void addSubtaskToEpic(Task subtask, Task epic);
 
     List<Task> getHistory();
+
+    void restoreTask(Task task);
+
+    void restoreEpic(Task epic);
+
+    void restoreSubtask(Task subtask);
 }
