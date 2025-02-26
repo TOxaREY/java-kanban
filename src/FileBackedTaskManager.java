@@ -31,23 +31,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println(fileBackedTaskManager.getAllSubtasks().equals(fileBackedTaskManager1.getAllSubtasks()));
     }
 
-    public void save() {
-        try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8); BufferedWriter br = new BufferedWriter(writer)) {
-            br.write("id,type,name,status,description,epic\n");
-            for (Task task : super.getAllTasks()) {
-                br.write(toString(task) + "\n");
-            }
-            for (Task task : super.getAllEpics()) {
-                br.write(toString(task) + "\n");
-            }
-            for (Task task : super.getAllSubtasks()) {
-                br.write(toString(task) + "\n");
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException(e);
-        }
-    }
-
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(reader)) {
@@ -205,5 +188,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         return task;
+    }
+
+    private void save() {
+        try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8); BufferedWriter br = new BufferedWriter(writer)) {
+            br.write("id,type,name,status,description,epic\n");
+            for (Task task : super.getAllTasks()) {
+                br.write(toString(task) + "\n");
+            }
+            for (Task task : super.getAllEpics()) {
+                br.write(toString(task) + "\n");
+            }
+            for (Task task : super.getAllSubtasks()) {
+                br.write(toString(task) + "\n");
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException(e);
+        }
     }
 }

@@ -19,10 +19,12 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void shouldReturnTrueIsEmptyLoadFileAfterSaveEmptyFile() {
-        fileBackedTaskManager.save();
+        Task task = new Task("Test Load", "task");
+        fileBackedTaskManager.createTask(task);
+        fileBackedTaskManager.deleteAllTasks();
 
         FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file);
-        assertTrue(fileBackedTaskManager1.getAllTasks().isEmpty() , "Task не удалился из истории.");
+        assertTrue(fileBackedTaskManager1.getAllTasks().isEmpty() , "Загруженный файл не пустой.");
     }
 
     @Test
