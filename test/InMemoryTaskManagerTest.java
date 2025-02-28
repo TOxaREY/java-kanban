@@ -214,4 +214,43 @@ class InMemoryTaskManagerTest {
 
         assertEquals(setHistory, getHistory, "Tasks не сохранились в истории.");
     }
+
+    @Test
+    void shouldSetTaskBeEqualRestoreTask() {
+        Task task = new Task("Test Restore", "task");
+        inMemoryTaskManager.createTask(task);
+        Task setTask = inMemoryTaskManager.getAllTasks().getFirst();
+        inMemoryTaskManager.deleteAllTasks();
+
+        inMemoryTaskManager.restoreTask(setTask);
+        Task getTask = inMemoryTaskManager.getAllTasks().getFirst();
+
+        assertEquals(setTask, getTask, "Task не восстановился.");
+    }
+
+    @Test
+    void shouldSetSubtaskBeEqualRestoreSubtask() {
+        Task subtask = new Subtask("Test Restore", "subtask");
+        inMemoryTaskManager.createSubtask(subtask);
+        Task setSubtask = inMemoryTaskManager.getAllSubtasks().getFirst();
+        inMemoryTaskManager.deleteAllSubtasks();
+
+        inMemoryTaskManager.restoreSubtask(setSubtask);
+        Task getSubtask = inMemoryTaskManager.getAllSubtasks().getFirst();
+
+        assertEquals(setSubtask, getSubtask, "Subtask не восстановился.");
+    }
+
+    @Test
+    void shouldGetEpicBeEqualRestoreEpic() {
+        Task epic = new Epic("Test Restore", "epic");
+        inMemoryTaskManager.createEpic(epic);
+        Task setEpic = inMemoryTaskManager.getAllEpics().getFirst();
+        inMemoryTaskManager.deleteAllEpics();
+
+        inMemoryTaskManager.restoreEpic(setEpic);
+        Task getEpic = inMemoryTaskManager.getAllEpics().getFirst();
+
+        assertEquals(setEpic, getEpic, "Epic не восстановился.");
+    }
 }

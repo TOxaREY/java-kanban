@@ -48,11 +48,13 @@ class SubtaskTest {
     void shouldGetSubtaskToStringBeEqualToSubtaskToString() {
         String name = "Subtask Name";
         String description = "subtask";
+        String epicId = "null";
         String subtaskToString = "Subtask{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + 0 +
                 ", status=" + Status.NEW +
+                ", epicId=" + epicId +
                 '}';
         Task subtask = new Subtask(name, description);
         taskManager.createSubtask(subtask);

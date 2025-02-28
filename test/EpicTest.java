@@ -76,11 +76,13 @@ class EpicTest {
     void shouldGetEpicToStringBeEqualToEpicToString() {
         String name = "Epic Name";
         String description = "epic";
+        String subtasksId = "[]";
         String epicToString = "Epic{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + 0 +
                 ", status=" + Status.NEW +
+                ", subtasksId=" + subtasksId +
                 '}';
         Task epic = new Epic(name, description);
         taskManager.createEpic(epic);
