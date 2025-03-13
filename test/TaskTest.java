@@ -1,19 +1,26 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 
     TaskManager taskManager;
+    Duration duration;
+    LocalDateTime startTime;
 
     @BeforeEach
     public void beforeEach() {
         taskManager = Managers.getDefault();
+        duration = Duration.ofMinutes(1);
+        startTime = LocalDateTime.of(2025, 3, 11, 0, 0);
     }
 
     @Test
-    void shouldInstancesOfTaskBeEqualToEachOther() {
+    void shouldInstancesOfTaskBeEqualToEachOther() throws TasksIntersectException {
         Task task = new Task("Test Equal", "task");
         taskManager.createTask(task);
         int id = task.getId();
@@ -25,7 +32,7 @@ class TaskTest {
     }
 
     @Test
-    void shouldTaskSetIdNotEqualGenerateId() {
+    void shouldTaskSetIdNotEqualGenerateId() throws TasksIntersectException {
         int id = 53;
         Task task = new Task("Test Id", "task");
         task.setId(id);
@@ -68,7 +75,7 @@ class TaskTest {
     }
 
     @Test
-    void shouldGetTaskToStringBeEqualToTaskToString() {
+    void shouldGetTaskToStringBeEqualToTaskToString() throws TasksIntersectException {
         String name = "Task Name";
         String description = "task";
         String taskToString = "Task{" +
@@ -76,8 +83,10 @@ class TaskTest {
                 ", description='" + description + '\'' +
                 ", id=" + 0 +
                 ", status=" + Status.NEW +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
-        Task task = new Task(name, description);
+        Task task = new Task(name, description, duration, startTime);
         taskManager.createTask(task);
         int id = task.getId();
 

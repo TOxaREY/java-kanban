@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
-    void createTask(Task task);
+    void createTask(Task task) throws TasksIntersectException;
 
     void createEpic(Task epic);
 
-    void createSubtask(Task subtask);
+    void createSubtask(Task subtask) throws TasksIntersectException;
 
     void updateTask(Task task);
 
@@ -40,7 +40,7 @@ public interface TaskManager {
 
     ArrayList<Task> getAllSubtasksByEpic(Task epic);
 
-    void addSubtaskToEpic(Task subtask, Task epic);
+    void addSubtaskToEpic(Task subtask, Task epic) throws TasksIntersectException;
 
     List<Task> getHistory();
 
@@ -49,4 +49,6 @@ public interface TaskManager {
     void restoreEpic(Task epic);
 
     void restoreSubtask(Task subtask);
+
+    List<Task> getPrioritizedTasks();
 }
