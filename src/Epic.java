@@ -8,7 +8,7 @@ public class Epic extends Task {
     private final ArrayList<Integer> subtasksId = new ArrayList<>();
     private Duration duration = Duration.ZERO;
     private LocalDateTime startTime = null;
-    private LocalDateTime endTime= null;
+    private LocalDateTime endTime = null;
 
     public Epic(String name, String description) {
         super(name, description);
