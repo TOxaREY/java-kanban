@@ -59,13 +59,15 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpic(Task epic) {
         epics.put(epic.getId(), epic);
         updateStatusEpic(epic);
+        ((Epic) epic).updateEpicDateTimeFields(subtasks);
     }
 
     @Override
     public void updateSubtask(Task subtask) {
         subtasks.put(subtask.getId(), subtask);
         if (((Subtask) subtask).getEpicId() != null) {
-            updateEpic(epics.get(((Subtask) subtask).getEpicId()));
+            Epic epic = (Epic) epics.get(((Subtask) subtask).getEpicId());
+            updateEpic(epic);
         }
     }
 
@@ -188,18 +190,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubtaskToEpic(Task subtask, Task epic) throws TasksIntersectException {
         if (subtask.getClass().equals(Subtask.class) && epic.getClass().equals(Epic.class)) {
             if (subtask.getStartTime() != null) {
-                if (((Epic) epic).getSubtasksId().isEmpty()) {
-                    ((Epic) epic).setDuration(subtask.getDuration());
-                    ((Epic) epic).setStartTime(subtask.getStartTime());
-                    ((Epic) epic).setEndTime(subtask.getEndTime());
-                } else {
-                    ((Epic) epic).setDuration(epic.getDuration().plus(subtask.getDuration()));
-                    if (epic.getStartTime().isAfter(subtask.getStartTime())) {
-                        ((Epic) epic).setStartTime(subtask.getStartTime());
-                    } else {
-                        ((Epic) epic).setEndTime(subtask.getEndTime());
-                    }
-                }
                 ((Subtask) subtask).setEpicId(epic.getId());
                 ((Epic) epic).setSubtaskId(subtask.getId());
                 updateSubtask(subtask);

@@ -62,6 +62,7 @@ public class FileBackedTaskManagerTest {
         Task epic = new Epic("Test Load", "epic");
         fileBackedTaskManager.createEpic(epic);
         Task setEpic = fileBackedTaskManager.getAllEpics().getFirst();
+        System.out.println(setEpic);
 
         FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file);
         Task getEpic = fileBackedTaskManager1.getAllEpics().getFirst();

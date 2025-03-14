@@ -17,7 +17,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         Task task1 = new Task("task1", "task", Duration.ofMinutes(100), LocalDateTime.now());//id=0
         Epic epic1 = new Epic("epic1", "epic");//id=1
-        Subtask subtask1 = new Subtask("subtask1", "subtask", Duration.ofMinutes(5), LocalDateTime.now().minusMinutes(6));//id=2
+        Subtask subtask1 = new Subtask("subtask1", "subtask", Duration.ofMinutes(1), LocalDateTime.now().minusMinutes(6));//id=2
         Subtask subtask2 = new Subtask("subtask2", "subtask", Duration.ofMinutes(5), LocalDateTime.now().plusMinutes(101));//id=3
 
         fileBackedTaskManager.createTask(task1);
@@ -145,14 +145,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             strArrList.add(6, task.getStartTime().toString());
         } else if (task.getClass().equals(Epic.class)) {
             strArrList.add(1, String.valueOf(Types.EPIC));
+            if (task.getDuration() == null) {
+                strArrList.add(5, "null");
+            } else {
+                strArrList.add(5, String.valueOf(task.getDuration().toMinutes()));
+            }
+
+            if (task.getStartTime() == null) {
+                strArrList.add(6, "null");
+            } else {
+                strArrList.add(6, task.getStartTime().toString());
+            }
             if (!((Epic) task).getSubtasksId().isEmpty()) {
                 StringBuilder joinId = new StringBuilder();
                 ((Epic) task).getSubtasksId()
                         .forEach(integer ->
                                 joinId.append(integer).append("r")
                         );
-                strArrList.add(5, String.valueOf(task.getDuration().toMinutes()));
-                strArrList.add(6, task.getStartTime().toString());
                 strArrList.add(7, joinId.toString());
             }
         } else if (task.getClass().equals(Subtask.class)) {
@@ -173,7 +182,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         if (split[1].equals(Types.TASK.toString())) {
             task = new Task(split[2], split[4], Duration.ofMinutes(Integer.parseInt(split[5])), LocalDateTime.parse(split[6], DateTimeFormatter.ISO_DATE_TIME));
         } else if (split[1].equals(Types.EPIC.toString())) {
-            task = new Epic(split[2], split[4]);
+            Duration duration;
+            LocalDateTime startTime;
+            if (split[5].equals("null")) {
+                duration = null;
+            } else {
+                duration = Duration.ofMinutes(Integer.parseInt(split[5]));
+            }
+            if (split[6].equals("null")) {
+                startTime = null;
+            } else {
+                startTime = LocalDateTime.parse(split[6], DateTimeFormatter.ISO_DATE_TIME);
+            }
+            task = new Epic(split[2], split[4], duration, startTime);
             if (split.length == 8) {
                 String[] splitId = split[7].split("r");
                 for (String s : splitId) {

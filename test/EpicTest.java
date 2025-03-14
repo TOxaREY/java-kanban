@@ -88,7 +88,7 @@ class EpicTest {
                 ", description='" + description + '\'' +
                 ", id=" + 0 +
                 ", status=" + Status.NEW +
-                ", duration=" + null +
+                ", duration=" + Duration.ZERO +
                 ", startTime=" + null +
                 ", subtasksId=" + subtasksId +
                 '}';
