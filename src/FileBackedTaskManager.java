@@ -1,5 +1,8 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -9,13 +12,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, TasksIntersectException {
         File file = File.createTempFile("list_tasks", ".csv");
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-        Task task1 = new Task("task1", "task");//id=0
+        Task task1 = new Task("task1", "task", Duration.ofMinutes(100), LocalDateTime.now());//id=0
         Epic epic1 = new Epic("epic1", "epic");//id=1
-        Subtask subtask1 = new Subtask("subtask1", "subtask");//id=2
-        Subtask subtask2 = new Subtask("subtask2", "subtask");//id=3
+        Subtask subtask1 = new Subtask("subtask1", "subtask", Duration.ofMinutes(1), LocalDateTime.now().minusMinutes(6));//id=2
+        Subtask subtask2 = new Subtask("subtask2", "subtask", Duration.ofMinutes(5), LocalDateTime.now().plusMinutes(101));//id=3
 
         fileBackedTaskManager.createTask(task1);
         fileBackedTaskManager.createEpic(epic1);
@@ -52,7 +55,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
+    public void createTask(Task task) throws TasksIntersectException {
         super.createTask(task);
         save();
     }
@@ -64,7 +67,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createSubtask(Task subtask) {
+    public void createSubtask(Task subtask) throws TasksIntersectException {
         super.createSubtask(subtask);
         save();
     }
@@ -124,7 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addSubtaskToEpic(Task subtask, Task epic) {
+    public void addSubtaskToEpic(Task subtask, Task epic) throws TasksIntersectException {
         super.addSubtaskToEpic(subtask, epic);
         save();
     }
@@ -138,19 +141,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (task.getClass().equals(Task.class)) {
             strArrList.add(1, String.valueOf(Types.TASK));
+            strArrList.add(5, String.valueOf(task.getDuration().toMinutes()));
+            strArrList.add(6, task.getStartTime().toString());
         } else if (task.getClass().equals(Epic.class)) {
             strArrList.add(1, String.valueOf(Types.EPIC));
-            if (((Epic) task).getSubtasksId() != null) {
+            if (task.getDuration() == null) {
+                strArrList.add(5, "null");
+            } else {
+                strArrList.add(5, String.valueOf(task.getDuration().toMinutes()));
+            }
+
+            if (task.getStartTime() == null) {
+                strArrList.add(6, "null");
+            } else {
+                strArrList.add(6, task.getStartTime().toString());
+            }
+            if (!((Epic) task).getSubtasksId().isEmpty()) {
                 StringBuilder joinId = new StringBuilder();
-                for (Integer i : ((Epic) task).getSubtasksId()) {
-                    joinId.append(i).append("r");
-                }
-                strArrList.add(5, joinId.toString());
+                ((Epic) task).getSubtasksId()
+                        .forEach(integer ->
+                                joinId.append(integer).append("r")
+                        );
+                strArrList.add(7, joinId.toString());
             }
         } else if (task.getClass().equals(Subtask.class)) {
             strArrList.add(1, String.valueOf(Types.SUBTASK));
+            strArrList.add(5, String.valueOf(task.getDuration().toMinutes()));
+            strArrList.add(6, task.getStartTime().toString());
             if (((Subtask) task).getEpicId() != null) {
-                strArrList.add(5, String.valueOf(((Subtask) task).getEpicId()));
+                strArrList.add(7, String.valueOf(((Subtask) task).getEpicId()));
             }
         }
 
@@ -161,19 +180,31 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String[] split = value.split(",");
         Task task = null;
         if (split[1].equals(Types.TASK.toString())) {
-            task = new Task(split[2], split[4]);
+            task = new Task(split[2], split[4], Duration.ofMinutes(Integer.parseInt(split[5])), LocalDateTime.parse(split[6], DateTimeFormatter.ISO_DATE_TIME));
         } else if (split[1].equals(Types.EPIC.toString())) {
-            task = new Epic(split[2], split[4]);
-            if (split.length == 6) {
-                String[] splitId = split[5].split("r");
+            Duration duration;
+            LocalDateTime startTime;
+            if (split[5].equals("null")) {
+                duration = null;
+            } else {
+                duration = Duration.ofMinutes(Integer.parseInt(split[5]));
+            }
+            if (split[6].equals("null")) {
+                startTime = null;
+            } else {
+                startTime = LocalDateTime.parse(split[6], DateTimeFormatter.ISO_DATE_TIME);
+            }
+            task = new Epic(split[2], split[4], duration, startTime);
+            if (split.length == 8) {
+                String[] splitId = split[7].split("r");
                 for (String s : splitId) {
                     ((Epic) task).setSubtaskId(Integer.parseInt(s));
                 }
             }
         } else if (split[1].equals(Types.SUBTASK.toString())) {
-            task = new Subtask(split[2], split[4]);
-            if (split.length == 6) {
-                ((Subtask) task).setEpicId(Integer.parseInt(split[5]));
+            task = new Subtask(split[2], split[4], Duration.ofMinutes(Integer.parseInt(split[5])), LocalDateTime.parse(split[6], DateTimeFormatter.ISO_DATE_TIME));
+            if (split.length == 8) {
+                ((Subtask) task).setEpicId(Integer.parseInt(split[7]));
             }
         }
         if (task != null) {
@@ -185,6 +216,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             } else if (split[3].equals(Status.DONE.toString())) {
                 task.setStatus(Status.DONE);
             }
+
         }
 
         return task;
@@ -192,16 +224,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8); BufferedWriter br = new BufferedWriter(writer)) {
-            br.write("id,type,name,status,description,epic\n");
-            for (Task task : super.getAllTasks()) {
-                br.write(toString(task) + "\n");
-            }
-            for (Task task : super.getAllEpics()) {
-                br.write(toString(task) + "\n");
-            }
-            for (Task task : super.getAllSubtasks()) {
-                br.write(toString(task) + "\n");
-            }
+            br.write("id,type,name,status,description,duration,startTime,epic\n");
+            super.getAllTasks()
+                    .forEach(task -> {
+                        try {
+                            br.write(toString(task) + "\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+            super.getAllEpics()
+                    .forEach(task -> {
+                        try {
+                            br.write(toString(task) + "\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+            super.getAllSubtasks()
+                    .forEach(task -> {
+                        try {
+                            br.write(toString(task) + "\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
         } catch (IOException e) {
             throw new ManagerSaveException(e);
         }

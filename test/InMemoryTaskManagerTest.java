@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
 
     InMemoryTaskManager inMemoryTaskManager;
+    LocalDateTime startTime;
+    Duration duration;
 
     @BeforeEach
     public void beforeEach() {
         inMemoryTaskManager = new InMemoryTaskManager();
+        startTime = LocalDateTime.of(2025, 3, 11, 0, 0);
+        duration = Duration.ofMinutes(1);
     }
 
     @Test
-    void shouldInstancesOfTaskBeEqualAfterSearchingById() {
+    void shouldInstancesOfTaskBeEqualAfterSearchingById() throws TasksIntersectException {
         Task task = new Task("Test Id", "task");
         inMemoryTaskManager.createTask(task);
 
@@ -36,8 +42,8 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldInstancesOfSubtaskBeEqualAfterSearchingById() {
-        Task subtask = new Subtask("Test Id", "subtask");
+    void shouldInstancesOfSubtaskBeEqualAfterSearchingById() throws TasksIntersectException {
+        Task subtask = new Subtask("Test Id", "subtask", duration, startTime);
         inMemoryTaskManager.createSubtask(subtask);
 
         Task subtask1 = inMemoryTaskManager.getSubtaskById(subtask.getId());
@@ -46,7 +52,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnNullGetTaskByIdAfterDeletingTask() {
+    void shouldReturnNullGetTaskByIdAfterDeletingTask() throws TasksIntersectException {
         Task task = new Task("Test Delete", "task");
         inMemoryTaskManager.createTask(task);
         inMemoryTaskManager.deleteTaskById(task.getId());
@@ -57,11 +63,11 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnNullGetEpicByIdAfterDeletingEpic() {
+    void shouldReturnNullGetEpicByIdAfterDeletingEpic() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
-        Task subtask = new Subtask("Test Delete", "subtask");
-        Task subtask1 = new Subtask("Test Delete", "subtask1");
-        Task subtask2 = new Subtask("Test Delete", "subtask2");
+        Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
+        Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
+        Task subtask2 = new Subtask("Test Delete", "subtask2", duration, startTime.plusMinutes(4));
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createSubtask(subtask);
         inMemoryTaskManager.createSubtask(subtask1);
@@ -77,9 +83,9 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnNullGetSubtaskByIdAfterDeletingSubtask() {
+    void shouldReturnNullGetSubtaskByIdAfterDeletingSubtask() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
-        Task subtask = new Subtask("Test Delete", "subtask");
+        Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createSubtask(subtask);
         inMemoryTaskManager.addSubtaskToEpic(subtask, epic);
@@ -91,9 +97,9 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetUpdatedSubtaskBeNotEqualSetSubtask() {
+    void shouldGetUpdatedSubtaskBeNotEqualSetSubtask() throws TasksIntersectException {
         Task epic = new Epic("Test Update Subtask", "epic");
-        Task subtask = new Subtask("Test Update", "subtask");
+        Task subtask = new Subtask("Test Update", "subtask", duration, startTime);
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createSubtask(subtask);
         inMemoryTaskManager.addSubtaskToEpic(subtask, epic);
@@ -107,7 +113,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnTrueGetAllTasksIsEmptyAfterDeletingAllTasks() {
+    void shouldReturnTrueGetAllTasksIsEmptyAfterDeletingAllTasks() throws TasksIntersectException {
         Task task = new Task("Test Delete", "task");
         Task task1 = new Task("Test Delete", "task1");
         Task task2 = new Task("Test Delete", "task2");
@@ -122,11 +128,11 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnTrueGetAllSubtasksIsEmptyAfterDeletingAllSubtasks() {
+    void shouldReturnTrueGetAllSubtasksIsEmptyAfterDeletingAllSubtasks() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
-        Task subtask = new Subtask("Test Delete", "subtask");
-        Task subtask1 = new Subtask("Test Delete", "subtask1");
-        Task subtask2 = new Subtask("Test Delete", "subtask2");
+        Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
+        Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
+        Task subtask2 = new Subtask("Test Delete", "subtask2", duration, startTime.plusMinutes(4));
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createSubtask(subtask);
         inMemoryTaskManager.createSubtask(subtask1);
@@ -140,11 +146,11 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetAllSubtasksBeEqualSetAllSubtasks() {
+    void shouldGetAllSubtasksBeEqualSetAllSubtasks() throws TasksIntersectException {
         Task epic = new Epic("Test Get", "epic");
-        Task subtask = new Subtask("Test Delete", "subtask");
-        Task subtask1 = new Subtask("Test Delete", "subtask1");
-        Task subtask2 = new Subtask("Test Delete", "subtask2");
+        Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
+        Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
+        Task subtask2 = new Subtask("Test Delete", "subtask2", duration, startTime.plusMinutes(4));
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createSubtask(subtask);
         inMemoryTaskManager.createSubtask(subtask1);
@@ -164,11 +170,11 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnTrueGetAllEpicsIsEmptyAfterDeletingAllEpics() {
+    void shouldReturnTrueGetAllEpicsIsEmptyAfterDeletingAllEpics() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
         Task epic1 = new Epic("Test Delete", "epic1");
         Task epic2 = new Epic("Test Delete", "epic2");
-        Task subtask = new Subtask("Test Delete", "subtask");
+        Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createEpic(epic1);
         inMemoryTaskManager.createEpic(epic2);
@@ -182,7 +188,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetUpdatedTaskBeNotEqualSetTask() {
+    void shouldGetUpdatedTaskBeNotEqualSetTask() throws TasksIntersectException {
         Task task = new Task("Test Update", "task");
         inMemoryTaskManager.createTask(task);
         String taskToString = inMemoryTaskManager.getTaskById(task.getId()).toString();
@@ -195,10 +201,10 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetHistoryTasksBeEqualSetTasks() {
+    void shouldGetHistoryTasksBeEqualSetTasks() throws TasksIntersectException {
         Task task = new Task("Test History", "task");
         Task epic = new Epic("Test History", "epic");
-        Task subtask = new Subtask("Test History", "subtask");
+        Task subtask = new Subtask("Test History", "subtask", duration, startTime);
         inMemoryTaskManager.createTask(task);
         inMemoryTaskManager.createEpic(epic);
         inMemoryTaskManager.createSubtask(subtask);
@@ -216,7 +222,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldSetTaskBeEqualRestoreTask() {
+    void shouldSetTaskBeEqualRestoreTask() throws TasksIntersectException {
         Task task = new Task("Test Restore", "task");
         inMemoryTaskManager.createTask(task);
         Task setTask = inMemoryTaskManager.getAllTasks().getFirst();
@@ -229,8 +235,8 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldSetSubtaskBeEqualRestoreSubtask() {
-        Task subtask = new Subtask("Test Restore", "subtask");
+    void shouldSetSubtaskBeEqualRestoreSubtask() throws TasksIntersectException {
+        Task subtask = new Subtask("Test Restore", "subtask", duration, startTime);
         inMemoryTaskManager.createSubtask(subtask);
         Task setSubtask = inMemoryTaskManager.getAllSubtasks().getFirst();
         inMemoryTaskManager.deleteAllSubtasks();
@@ -252,5 +258,167 @@ class InMemoryTaskManagerTest {
         Task getEpic = inMemoryTaskManager.getAllEpics().getFirst();
 
         assertEquals(setEpic, getEpic, "Epic не восстановился.");
+    }
+
+    @Test
+    void shouldGetPrioritizedTasksBeEqualSetTasksByTime() throws TasksIntersectException {
+        Task task1 = new Task("Test History", "task1", duration, startTime);
+        Task task2 = new Task("Test History", "task2", duration, startTime.minusMinutes(50));
+        Task subtask1 = new Subtask("Test History", "subtask1", duration, startTime.plusMinutes(50));
+        Task subtask2 = new Subtask("Test History", "subtask2", duration, startTime.plusMinutes(25));
+        inMemoryTaskManager.createTask(task1);
+        inMemoryTaskManager.createTask(task2);
+        inMemoryTaskManager.createSubtask(subtask1);
+        inMemoryTaskManager.createSubtask(subtask2);
+        List<Task> setTasks = new ArrayList<>();
+        setTasks.add(task2);
+        setTasks.add(task1);
+        setTasks.add(subtask2);
+        setTasks.add(subtask1);
+
+        List<Task> getTasks = inMemoryTaskManager.getPrioritizedTasks();
+
+        System.out.println(getTasks);
+        System.out.println(setTasks);
+
+        assertEquals(setTasks, getTasks, "Tasks не отсортировались по времени старта.");
+    }
+
+    @Test
+    void shouldReturnTrueGetStartTimeTaskIsNullAfterNotSetStartTimeTask() throws TasksIntersectException {
+        Task task = new Task("Test StartTime", "task");
+        inMemoryTaskManager.createTask(task);
+
+        LocalDateTime getStartTime = task.getStartTime();
+
+        assertNull(getStartTime, "Task сохранил время начала.");
+    }
+
+    @Test
+    void shouldReturnTrueGetStartTimeSubtaskIsNullAfterNotSetStartTimeSubtask() throws TasksIntersectException {
+        Task subtask = new Subtask("Test StartTime", "subtask", duration, null);
+        inMemoryTaskManager.createSubtask(subtask);
+
+        LocalDateTime getStartTime = subtask.getStartTime();
+
+        assertNull(getStartTime, "Subtask сохранил время начала.");
+    }
+
+    @Test
+    void shouldReturnExceptionAfterSetIntersectTask() throws TasksIntersectException {
+        Task task = new Task("Test Intersect Task", "task", duration.plusMinutes(5), startTime);
+        inMemoryTaskManager.createTask(task);
+        Task task1 = new Task("Test Intersect Task1", "task1", duration, startTime.plusMinutes(3));
+        TasksIntersectException exception = assertThrows(
+                TasksIntersectException.class,
+                () -> inMemoryTaskManager.createTask(task1)
+        );
+
+        assertEquals("Task name: " + task1.getName() + " пересекается по времени выполнения с другими задачами.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnExceptionAfterSetIntersectSubtask() throws TasksIntersectException {
+        Task subtask = new Subtask("Test Intersect Subtask", "subtask", duration.plusMinutes(5), startTime);
+        inMemoryTaskManager.createSubtask(subtask);
+        Task subtask1 = new Task("Test Intersect Subtask1", "subtask1", duration, startTime.plusMinutes(3));
+        TasksIntersectException exception = assertThrows(
+                TasksIntersectException.class,
+                () -> inMemoryTaskManager.createSubtask(subtask1)
+        );
+
+        assertEquals("Subtask name: " + subtask1.getName() + " пересекается по времени выполнения с другими задачами.", exception.getMessage());
+    }
+
+    @Test
+    void shouldGetStatusNewEpicAfterSetStatusNewAllSubtasks() throws TasksIntersectException {
+        Task epic = new Epic("Test Status Epic", "epic");
+        Task subtask1 = new Subtask("Test Status Epic", "subtask1", duration, startTime);
+        Task subtask2 = new Subtask("Test Status Epic", "subtask2", duration, startTime.plusMinutes(5));
+        Task subtask3 = new Subtask("Test Status Epic", "subtask3", duration, startTime.plusMinutes(10));
+        inMemoryTaskManager.createEpic(epic);
+        inMemoryTaskManager.createSubtask(subtask1);
+        inMemoryTaskManager.createSubtask(subtask2);
+        inMemoryTaskManager.createSubtask(subtask3);
+        inMemoryTaskManager.addSubtaskToEpic(subtask1, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask2, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask3, epic);
+        subtask1.setStatus(Status.NEW);
+        subtask2.setStatus(Status.NEW);
+        subtask3.setStatus(Status.NEW);
+        inMemoryTaskManager.updateSubtask(subtask1);
+        inMemoryTaskManager.updateSubtask(subtask2);
+        inMemoryTaskManager.updateSubtask(subtask3);
+
+        assertEquals(Status.NEW, epic.getStatus(), "Epic рассчитал неверный статус.");
+    }
+
+    @Test
+    void shouldGetStatusDoneEpicAfterSetStatusDoneAllSubtasks() throws TasksIntersectException {
+        Task epic = new Epic("Test Status Epic", "epic");
+        Task subtask1 = new Subtask("Test Status Epic", "subtask1", duration, startTime);
+        Task subtask2 = new Subtask("Test Status Epic", "subtask2", duration, startTime.plusMinutes(5));
+        Task subtask3 = new Subtask("Test Status Epic", "subtask3", duration, startTime.plusMinutes(10));
+        inMemoryTaskManager.createEpic(epic);
+        inMemoryTaskManager.createSubtask(subtask1);
+        inMemoryTaskManager.createSubtask(subtask2);
+        inMemoryTaskManager.createSubtask(subtask3);
+        inMemoryTaskManager.addSubtaskToEpic(subtask1, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask2, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask3, epic);
+        subtask1.setStatus(Status.DONE);
+        subtask2.setStatus(Status.DONE);
+        subtask3.setStatus(Status.DONE);
+        inMemoryTaskManager.updateSubtask(subtask1);
+        inMemoryTaskManager.updateSubtask(subtask2);
+        inMemoryTaskManager.updateSubtask(subtask3);
+
+        assertEquals(Status.DONE, epic.getStatus(), "Epic рассчитал неверный статус.");
+    }
+
+    @Test
+    void shouldGetStatusInProgressEpicAfterSetStatusNewAndDoneSubtasks() throws TasksIntersectException {
+        Task epic = new Epic("Test Status Epic", "epic");
+        Task subtask1 = new Subtask("Test Status Epic", "subtask1", duration, startTime);
+        Task subtask2 = new Subtask("Test Status Epic", "subtask2", duration, startTime.plusMinutes(5));
+        Task subtask3 = new Subtask("Test Status Epic", "subtask3", duration, startTime.plusMinutes(10));
+        inMemoryTaskManager.createEpic(epic);
+        inMemoryTaskManager.createSubtask(subtask1);
+        inMemoryTaskManager.createSubtask(subtask2);
+        inMemoryTaskManager.createSubtask(subtask3);
+        inMemoryTaskManager.addSubtaskToEpic(subtask1, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask2, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask3, epic);
+        subtask1.setStatus(Status.NEW);
+        subtask2.setStatus(Status.DONE);
+        subtask3.setStatus(Status.NEW);
+        inMemoryTaskManager.updateSubtask(subtask1);
+        inMemoryTaskManager.updateSubtask(subtask2);
+        inMemoryTaskManager.updateSubtask(subtask3);
+
+        assertEquals(Status.IN_PROGRESS, epic.getStatus(), "Epic рассчитал неверный статус.");
+    }
+
+    @Test
+    void shouldGetStatusInProgressEpicAfterSetStatusInProgressAllSubtasks() throws TasksIntersectException {
+        Task epic = new Epic("Test Status Epic", "epic");
+        Task subtask1 = new Subtask("Test Status Epic", "subtask1", duration, startTime);
+        Task subtask2 = new Subtask("Test Status Epic", "subtask2", duration, startTime.plusMinutes(5));
+        Task subtask3 = new Subtask("Test Status Epic", "subtask3", duration, startTime.plusMinutes(10));
+        inMemoryTaskManager.createEpic(epic);
+        inMemoryTaskManager.createSubtask(subtask1);
+        inMemoryTaskManager.createSubtask(subtask2);
+        inMemoryTaskManager.createSubtask(subtask3);
+        inMemoryTaskManager.addSubtaskToEpic(subtask1, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask2, epic);
+        inMemoryTaskManager.addSubtaskToEpic(subtask3, epic);
+        subtask1.setStatus(Status.IN_PROGRESS);
+        subtask2.setStatus(Status.IN_PROGRESS);
+        subtask3.setStatus(Status.IN_PROGRESS);
+        inMemoryTaskManager.updateSubtask(subtask1);
+        inMemoryTaskManager.updateSubtask(subtask2);
+        inMemoryTaskManager.updateSubtask(subtask3);
+
+        assertEquals(Status.IN_PROGRESS, epic.getStatus(), "Epic рассчитал неверный статус.");
     }
 }

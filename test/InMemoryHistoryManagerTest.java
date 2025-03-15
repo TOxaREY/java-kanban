@@ -14,7 +14,7 @@ public class InMemoryHistoryManagerTest {
 
 
     @Test
-    void shouldSetTaskEqualToGetTaskFromHistory() {
+    void shouldSetTaskEqualToGetTaskFromHistory() throws TasksIntersectException {
         Task task = new Task("Test Add History", "task");
         inMemoryTaskManager.createTask(task);
         inMemoryHistoryManager.add(task);
@@ -25,7 +25,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void shouldReturnTrueIsEmptyListAfterDeletingTaskFromHistory() {
+    void shouldReturnTrueIsEmptyListAfterDeletingTaskFromHistory() throws TasksIntersectException {
         Task task = new Task("Test Delete History", "task");
         inMemoryTaskManager.createTask(task);
         inMemoryHistoryManager.add(task);
@@ -35,7 +35,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void shouldSetSecondTaskEqualToGetTaskFromHistoryAfterDeleteFirstTask() {
+    void shouldSetSecondTaskEqualToGetTaskFromHistoryAfterDeleteFirstTask() throws TasksIntersectException {
         Task task1 = new Task("Test Delete History", "task");
         Task task2 = new Task("Test Delete History", "task2");
         inMemoryTaskManager.createTask(task1);
@@ -50,7 +50,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void shouldSetFirstTaskEqualToGetTaskFromHistoryAfterDeleteSecondTask() {
+    void shouldSetFirstTaskEqualToGetTaskFromHistoryAfterDeleteSecondTask() throws TasksIntersectException {
         Task task1 = new Task("Test Delete History", "task");
         Task task2 = new Task("Test Delete History", "task2");
         inMemoryTaskManager.createTask(task1);
@@ -65,7 +65,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void shouldSetFirstAndThirdTaskEqualToGetTasksFromHistoryAfterDeleteSecondTask() {
+    void shouldSetFirstAndThirdTaskEqualToGetTasksFromHistoryAfterDeleteSecondTask() throws TasksIntersectException {
         Task task1 = new Task("Test Delete History", "task");
         Task task2 = new Task("Test Delete History", "task2");
         Task task3 = new Task("Test Delete History", "task3");

@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,10 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class EpicTest {
 
     TaskManager taskManager;
+    Duration duration;
+    LocalDateTime startTime;
 
     @BeforeEach
     public void beforeEach() {
         taskManager = Managers.getDefault();
+        duration = Duration.ofMinutes(1);
+        startTime = LocalDateTime.of(2025, 3, 11, 0, 0);
     }
 
     @Test
@@ -26,7 +32,7 @@ class EpicTest {
     }
 
     @Test
-    void shouldReturnTrueGetSubtasksIdIsEmptyAfterAddingEpicAsSubtask() {
+    void shouldReturnTrueGetSubtasksIdIsEmptyAfterAddingEpicAsSubtask() throws TasksIntersectException {
         Epic epic = new Epic("Test Add", "epic");
         taskManager.createEpic(epic);
         taskManager.addSubtaskToEpic(epic, epic);
@@ -73,15 +79,17 @@ class EpicTest {
     }
 
     @Test
-    void shouldGetEpicToStringBeEqualToEpicToString() {
+    void shouldGetEpicToStringBeEqualToSetEpicToString() {
         String name = "Epic Name";
-        String description = "epic";
+        String description = "Epic Name";
         String subtasksId = "[]";
         String epicToString = "Epic{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + 0 +
                 ", status=" + Status.NEW +
+                ", duration=" + Duration.ZERO +
+                ", startTime=" + null +
                 ", subtasksId=" + subtasksId +
                 '}';
         Task epic = new Epic(name, description);
@@ -90,5 +98,18 @@ class EpicTest {
         String getEpicToString = taskManager.getEpicById(epic.getId()).toString();
 
         assertEquals(epicToString, getEpicToString, "Epic при добавлении изменился.");
+    }
+
+    @Test
+    void shouldGetEndTimeEpicBeEqualToSetSubtaskEndTime() throws TasksIntersectException {
+        Task epic1 = new Epic("Epic Name", "epic");
+        Task subtask1 = new Subtask("Subtask Name", "subtask", duration, startTime);
+        taskManager.createEpic(epic1);
+        taskManager.createSubtask(subtask1);
+        taskManager.addSubtaskToEpic(subtask1, epic1);
+        System.out.println(subtask1);
+        System.out.println(epic1);
+
+        assertEquals(subtask1.getEndTime(), epic1.getEndTime(), "Epic не сохранил время окончания subtask.");
     }
 }

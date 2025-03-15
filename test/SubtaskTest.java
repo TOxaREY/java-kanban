@@ -1,20 +1,27 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubtaskTest {
 
     TaskManager taskManager;
+    Duration duration;
+    LocalDateTime startTime;
 
     @BeforeEach
     public void beforeEach() {
         taskManager = Managers.getDefault();
+        duration = Duration.ofMinutes(1);
+        startTime = LocalDateTime.of(2025, 3, 11, 0, 0);
     }
 
     @Test
-    void shouldInstancesOfSubtaskBeEqualToEachOther() {
-        Task subtask = new Subtask("Test Equal", "subtask");
+    void shouldInstancesOfSubtaskBeEqualToEachOther() throws TasksIntersectException {
+        Task subtask = new Subtask("Test Equal", "subtask", duration, startTime);
         taskManager.createSubtask(subtask);
         int id = subtask.getId();
 
@@ -25,8 +32,8 @@ class SubtaskTest {
     }
 
     @Test
-    void shouldReturnNullGetEpicIdAfterAddingSubtaskAsEpic() {
-        Subtask subtask = new Subtask("Test Add", "subtask");
+    void shouldReturnNullGetEpicIdAfterAddingSubtaskAsEpic() throws TasksIntersectException {
+        Subtask subtask = new Subtask("Test Add", "subtask", duration, startTime);
         taskManager.createEpic(subtask);
         taskManager.addSubtaskToEpic(subtask, subtask);
 
@@ -36,7 +43,7 @@ class SubtaskTest {
     @Test
     void shouldGetEpicIdBeEqualToSetEpicId() {
         int id = 53;
-        Subtask subtask = new Subtask("Test EpicId", "subtask");
+        Subtask subtask = new Subtask("Test EpicId", "subtask", duration, startTime);
         subtask.setEpicId(id);
 
         int getEpicId = subtask.getEpicId();
@@ -45,7 +52,7 @@ class SubtaskTest {
     }
 
     @Test
-    void shouldGetSubtaskToStringBeEqualToSubtaskToString() {
+    void shouldGetSubtaskToStringBeEqualToSubtaskToString() throws TasksIntersectException {
         String name = "Subtask Name";
         String description = "subtask";
         String epicId = "null";
@@ -54,9 +61,11 @@ class SubtaskTest {
                 ", description='" + description + '\'' +
                 ", id=" + 0 +
                 ", status=" + Status.NEW +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 ", epicId=" + epicId +
                 '}';
-        Task subtask = new Subtask(name, description);
+        Task subtask = new Subtask(name, description, duration, startTime);
         taskManager.createSubtask(subtask);
         int id = subtask.getId();
 
