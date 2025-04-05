@@ -9,7 +9,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-
     InMemoryTaskManager inMemoryTaskManager;
     LocalDateTime startTime;
     Duration duration;
@@ -22,7 +21,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldInstancesOfTaskBeEqualAfterSearchingById() throws TasksIntersectException {
+    void shouldInstancesOfTaskBeEqualAfterSearchingById() throws TasksIntersectException, NotFoundException {
         Task task = new Task("Test Id", "task");
         inMemoryTaskManager.createTask(task);
 
@@ -32,7 +31,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldInstancesOfEpicBeEqualAfterSearchingById() {
+    void shouldInstancesOfEpicBeEqualAfterSearchingById() throws NotFoundException {
         Task epic = new Epic("Test Id", "epic");
         inMemoryTaskManager.createEpic(epic);
 
@@ -42,7 +41,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldInstancesOfSubtaskBeEqualAfterSearchingById() throws TasksIntersectException {
+    void shouldInstancesOfSubtaskBeEqualAfterSearchingById() throws TasksIntersectException, NotFoundException {
         Task subtask = new Subtask("Test Id", "subtask", duration, startTime);
         inMemoryTaskManager.createSubtask(subtask);
 
@@ -52,18 +51,18 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnNullGetTaskByIdAfterDeletingTask() throws TasksIntersectException {
+    void shouldReturnExceptionGetTaskByIdAfterDeletingTask() throws TasksIntersectException, NotFoundException {
         Task task = new Task("Test Delete", "task");
         inMemoryTaskManager.createTask(task);
         inMemoryTaskManager.deleteTaskById(task.getId());
 
-        Task getTask = inMemoryTaskManager.getTaskById(task.getId());
+        Exception getTask = assertThrows(NotFoundException.class, () -> inMemoryTaskManager.getTaskById(task.getId()));
 
-        assertNull(getTask, "Task не удалился.");
+        assertEquals("Задачи с id=0 не существует", getTask.getMessage(), "Task не удалился.");
     }
 
     @Test
-    void shouldReturnNullGetEpicByIdAfterDeletingEpic() throws TasksIntersectException {
+    void shouldReturnExceptionGetEpicByIdAfterDeletingEpic() throws TasksIntersectException, NotFoundException {
         Task epic = new Epic("Test Delete", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
@@ -77,13 +76,13 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.addSubtaskToEpic(subtask2, epic);
         inMemoryTaskManager.deleteEpicById(epic.getId());
 
-        Task getEpic = inMemoryTaskManager.getEpicById(epic.getId());
+        Exception getEpic = assertThrows(NotFoundException.class, () -> inMemoryTaskManager.getEpicById(epic.getId()));
 
-        assertNull(getEpic, "Epic не удалился.");
+        assertEquals("Эпика с id=0 не существует", getEpic.getMessage(), "Epic не удалился.");
     }
 
     @Test
-    void shouldReturnNullGetSubtaskByIdAfterDeletingSubtask() throws TasksIntersectException {
+    void shouldReturnExceptionGetSubtaskByIdAfterDeletingSubtask() throws TasksIntersectException, NotFoundException {
         Task epic = new Epic("Test Delete", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         inMemoryTaskManager.createEpic(epic);
@@ -91,13 +90,13 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.addSubtaskToEpic(subtask, epic);
         inMemoryTaskManager.deleteSubtaskById(subtask.getId());
 
-        Task getSubtask = inMemoryTaskManager.getSubtaskById(subtask.getId());
+        Exception getSubtask = assertThrows(NotFoundException.class, () -> inMemoryTaskManager.getSubtaskById(subtask.getId()));
 
-        assertNull(getSubtask, "Subtask не удалился.");
+        assertEquals("Подзадачи с id=1 не существует", getSubtask.getMessage(), "Subtask не удалился.");
     }
 
     @Test
-    void shouldGetUpdatedSubtaskBeNotEqualSetSubtask() throws TasksIntersectException {
+    void shouldGetUpdatedSubtaskBeNotEqualSetSubtask() throws TasksIntersectException, NotFoundException {
         Task epic = new Epic("Test Update Subtask", "epic");
         Task subtask = new Subtask("Test Update", "subtask", duration, startTime);
         inMemoryTaskManager.createEpic(epic);
@@ -146,7 +145,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetAllSubtasksBeEqualSetAllSubtasks() throws TasksIntersectException {
+    void shouldGetAllSubtasksBeEqualSetAllSubtasks() throws TasksIntersectException, NotFoundException {
         Task epic = new Epic("Test Get", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
@@ -188,7 +187,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetUpdatedTaskBeNotEqualSetTask() throws TasksIntersectException {
+    void shouldGetUpdatedTaskBeNotEqualSetTask() throws TasksIntersectException, NotFoundException {
         Task task = new Task("Test Update", "task");
         inMemoryTaskManager.createTask(task);
         String taskToString = inMemoryTaskManager.getTaskById(task.getId()).toString();
@@ -201,7 +200,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldGetHistoryTasksBeEqualSetTasks() throws TasksIntersectException {
+    void shouldGetHistoryTasksBeEqualSetTasks() throws TasksIntersectException, NotFoundException {
         Task task = new Task("Test History", "task");
         Task epic = new Epic("Test History", "epic");
         Task subtask = new Subtask("Test History", "subtask", duration, startTime);
@@ -278,10 +277,7 @@ class InMemoryTaskManagerTest {
 
         List<Task> getTasks = inMemoryTaskManager.getPrioritizedTasks();
 
-        System.out.println(getTasks);
-        System.out.println(setTasks);
-
-        assertEquals(setTasks, getTasks, "Tasks не отсортировались по времени старта.");
+        assertEquals(setTasks, getTasks, "Tasks не от сортировались по времени старта.");
     }
 
     @Test

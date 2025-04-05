@@ -20,7 +20,7 @@ class TaskTest {
     }
 
     @Test
-    void shouldInstancesOfTaskBeEqualToEachOther() throws TasksIntersectException {
+    void shouldInstancesOfTaskBeEqualToEachOther() throws TasksIntersectException, NotFoundException {
         Task task = new Task("Test Equal", "task");
         taskManager.createTask(task);
         int id = task.getId();
@@ -75,7 +75,7 @@ class TaskTest {
     }
 
     @Test
-    void shouldGetTaskToStringBeEqualToTaskToString() throws TasksIntersectException {
+    void shouldGetTaskToStringBeEqualToTaskToString() throws TasksIntersectException, NotFoundException {
         String name = "Task Name";
         String description = "task";
         String taskToString = "Task{" +

@@ -21,7 +21,7 @@ class EpicTest {
     }
 
     @Test
-    void shouldInstancesOfEpicBeEqualToEachOther() {
+    void shouldInstancesOfEpicBeEqualToEachOther() throws NotFoundException {
         Task epic = new Epic("Test Equal", "epic");
         taskManager.createEpic(epic);
 
@@ -79,7 +79,7 @@ class EpicTest {
     }
 
     @Test
-    void shouldGetEpicToStringBeEqualToSetEpicToString() {
+    void shouldGetEpicToStringBeEqualToSetEpicToString() throws NotFoundException {
         String name = "Epic Name";
         String description = "Epic Name";
         String subtasksId = "[]";
@@ -90,6 +90,7 @@ class EpicTest {
                 ", status=" + Status.NEW +
                 ", duration=" + Duration.ZERO +
                 ", startTime=" + null +
+                ", endTime=" + null +
                 ", subtasksId=" + subtasksId +
                 '}';
         Task epic = new Epic(name, description);
@@ -107,8 +108,6 @@ class EpicTest {
         taskManager.createEpic(epic1);
         taskManager.createSubtask(subtask1);
         taskManager.addSubtaskToEpic(subtask1, epic1);
-        System.out.println(subtask1);
-        System.out.println(epic1);
 
         assertEquals(subtask1.getEndTime(), epic1.getEndTime(), "Epic не сохранил время окончания subtask.");
     }

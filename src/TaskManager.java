@@ -20,11 +20,11 @@ public interface TaskManager {
 
     ArrayList<Task> getAllTasks();
 
-    Task getEpicById(Integer id);
+    Task getEpicById(Integer id) throws NotFoundException;
 
-    Task getSubtaskById(Integer id);
+    Task getSubtaskById(Integer id) throws NotFoundException;
 
-    Task getTaskById(Integer id);
+    Task getTaskById(Integer id) throws NotFoundException;
 
     void deleteAllEpics();
 
@@ -32,13 +32,13 @@ public interface TaskManager {
 
     void deleteAllSubtasks();
 
-    void deleteEpicById(Integer id);
+    void deleteEpicById(Integer id) throws NotFoundException;
 
-    void deleteSubtaskById(Integer id);
+    void deleteSubtaskById(Integer id) throws NotFoundException;
 
-    void deleteTaskById(Integer id);
+    void deleteTaskById(Integer id) throws NotFoundException;
 
-    ArrayList<Task> getAllSubtasksByEpic(Task epic);
+    ArrayList<Task> getAllSubtasksByEpic(Task epic) throws NotFoundException;
 
     void addSubtaskToEpic(Task subtask, Task epic) throws TasksIntersectException;
 
