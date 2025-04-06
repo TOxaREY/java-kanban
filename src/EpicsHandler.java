@@ -21,11 +21,11 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
         switch (endpoint) {
-            case CREATE_EPIC -> createEpic(exchange);
-            case GET_ALL_EPICS -> getAllEpics(exchange);
-            case GET_EPIC_BY_ID -> getEpicById(exchange);
-            case DELETE_ALL_EPICS -> deleteAllEpics(exchange);
-            case DELETE_EPIC_BY_ID -> deleteEpicsById(exchange);
+            case CREATE_TASK -> createEpic(exchange);
+            case GET_ALL_TASKS -> getAllEpics(exchange);
+            case GET_TASK_BY_ID -> getEpicById(exchange);
+            case DELETE_ALL_TASKS -> deleteAllEpics(exchange);
+            case DELETE_TASK_BY_ID -> deleteEpicsById(exchange);
             case GET_ALL_SUBTASKS_BY_EPIC -> getAllSubtasksByEpic(exchange);
             case UNKNOWN -> sendNotFound404Code(exchange, "Неизвестный метод для эпика");
         }
@@ -105,13 +105,13 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         if (pathParts.length == 2 && pathParts[1].equals("epics")) {
             switch (requestMethod) {
                 case "GET" -> {
-                    return Endpoint.GET_ALL_EPICS;
+                    return Endpoint.GET_ALL_TASKS;
                 }
                 case "POST" -> {
-                    return Endpoint.CREATE_EPIC;
+                    return Endpoint.CREATE_TASK;
                 }
                 case "DELETE" -> {
-                    return Endpoint.DELETE_ALL_EPICS;
+                    return Endpoint.DELETE_ALL_TASKS;
                 }
             }
         }
@@ -119,11 +119,11 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         if (pathParts.length == 3 && pathParts[1].equals("epics")) {
             switch (requestMethod) {
                 case "GET" -> {
-                    return Endpoint.GET_EPIC_BY_ID;
+                    return Endpoint.GET_TASK_BY_ID;
                 }
 
                 case "DELETE" -> {
-                    return Endpoint.DELETE_EPIC_BY_ID;
+                    return Endpoint.DELETE_TASK_BY_ID;
                 }
             }
         }
@@ -136,6 +136,4 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
 
         return Endpoint.UNKNOWN;
     }
-
-    enum Endpoint { CREATE_EPIC, GET_ALL_EPICS, GET_EPIC_BY_ID, DELETE_ALL_EPICS, DELETE_EPIC_BY_ID, GET_ALL_SUBTASKS_BY_EPIC, UNKNOWN }
 }

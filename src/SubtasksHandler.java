@@ -21,11 +21,11 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
         switch (endpoint) {
-            case CREATE_UPDATE_SUBTASK -> createUpdateSubtask(exchange);
-            case GET_ALL_SUBTASKS -> getAllSubtasks(exchange);
-            case GET_SUBTASK_BY_ID -> getSubtaskById(exchange);
-            case DELETE_ALL_SUBTASKS -> deleteAllSubtasks(exchange);
-            case DELETE_SUBTASK_BY_ID -> deleteSubtaskById(exchange);
+            case CREATE_UPDATE_TASK -> createUpdateSubtask(exchange);
+            case GET_ALL_TASKS -> getAllSubtasks(exchange);
+            case GET_TASK_BY_ID -> getSubtaskById(exchange);
+            case DELETE_ALL_TASKS -> deleteAllSubtasks(exchange);
+            case DELETE_TASK_BY_ID -> deleteSubtaskById(exchange);
             case ADD_SUBTASK_TO_EPIC -> addSubtaskToEpic(exchange);
             case UNKNOWN -> sendNotFound404Code(exchange, "Неизвестный метод для подзадачи");
         }
@@ -124,13 +124,13 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         if (pathParts.length == 2 && pathParts[1].equals("subtasks")) {
             switch (requestMethod) {
                 case "GET" -> {
-                    return Endpoint.GET_ALL_SUBTASKS;
+                    return Endpoint.GET_ALL_TASKS;
                 }
                 case "POST" -> {
-                    return Endpoint.CREATE_UPDATE_SUBTASK;
+                    return Endpoint.CREATE_UPDATE_TASK;
                 }
                 case "DELETE" -> {
-                    return Endpoint.DELETE_ALL_SUBTASKS;
+                    return Endpoint.DELETE_ALL_TASKS;
                 }
             }
         }
@@ -138,10 +138,10 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         if (pathParts.length == 3 && pathParts[1].equals("subtasks")) {
             switch (requestMethod) {
                 case "GET" -> {
-                    return Endpoint.GET_SUBTASK_BY_ID;
+                    return Endpoint.GET_TASK_BY_ID;
                 }
                 case "DELETE" -> {
-                    return Endpoint.DELETE_SUBTASK_BY_ID;
+                    return Endpoint.DELETE_TASK_BY_ID;
                 }
             }
         }
@@ -154,6 +154,4 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
 
         return Endpoint.UNKNOWN;
     }
-
-    enum Endpoint { CREATE_UPDATE_SUBTASK, GET_ALL_SUBTASKS, GET_SUBTASK_BY_ID, DELETE_ALL_SUBTASKS, DELETE_SUBTASK_BY_ID, ADD_SUBTASK_TO_EPIC, UNKNOWN }
 }

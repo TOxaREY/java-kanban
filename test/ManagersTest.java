@@ -8,7 +8,7 @@ class ManagersTest {
     HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Test
-    void shouldTaskInstancesEqualToGetFromInMemoryTaskManager() throws TasksIntersectException, NotFoundException {
+    void shouldTaskInstancesEqualToGetFromInMemoryTaskManager() throws TasksIntersectException {
         Task task = new Task("Test Init", "task");
         taskManager.createTask(task);
         int id = task.getId();

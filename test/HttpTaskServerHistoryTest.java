@@ -42,7 +42,7 @@ public class HttpTaskServerHistoryTest {
     }
 
     @Test
-    void shouldGetHistoryTasksBeEqualSetTasks() throws TasksIntersectException, NotFoundException, IOException, InterruptedException {
+    void shouldGetHistoryTasksBeEqualSetTasks() throws TasksIntersectException, IOException, InterruptedException {
         Task task = new Task("Test History", "task");
         Task task2 = new Task("Test History", "task2");
         Task task3 = new Task("Test History", "task3", duration, startTime);

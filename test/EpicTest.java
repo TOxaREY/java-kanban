@@ -21,7 +21,7 @@ class EpicTest {
     }
 
     @Test
-    void shouldInstancesOfEpicBeEqualToEachOther() throws NotFoundException {
+    void shouldInstancesOfEpicBeEqualToEachOther() {
         Task epic = new Epic("Test Equal", "epic");
         taskManager.createEpic(epic);
 
@@ -79,7 +79,7 @@ class EpicTest {
     }
 
     @Test
-    void shouldGetEpicToStringBeEqualToSetEpicToString() throws NotFoundException {
+    void shouldGetEpicToStringBeEqualToSetEpicToString() {
         String name = "Epic Name";
         String description = "Epic Name";
         String subtasksId = "[]";

@@ -109,19 +109,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteEpicById(Integer id) throws NotFoundException {
+    public void deleteEpicById(Integer id) {
         super.deleteEpicById(id);
         save();
     }
 
     @Override
-    public void deleteSubtaskById(Integer id) throws NotFoundException {
+    public void deleteSubtaskById(Integer id) {
         super.deleteSubtaskById(id);
         save();
     }
 
     @Override
-    public void deleteTaskById(Integer id) throws NotFoundException {
+    public void deleteTaskById(Integer id) {
         super.deleteTaskById(id);
         save();
     }

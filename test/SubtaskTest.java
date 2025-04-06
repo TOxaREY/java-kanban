@@ -20,7 +20,7 @@ class SubtaskTest {
     }
 
     @Test
-    void shouldInstancesOfSubtaskBeEqualToEachOther() throws TasksIntersectException, NotFoundException {
+    void shouldInstancesOfSubtaskBeEqualToEachOther() throws TasksIntersectException {
         Task subtask = new Subtask("Test Equal", "subtask", duration, startTime);
         taskManager.createSubtask(subtask);
         int id = subtask.getId();
@@ -52,7 +52,7 @@ class SubtaskTest {
     }
 
     @Test
-    void shouldGetSubtaskToStringBeEqualToSubtaskToString() throws TasksIntersectException, NotFoundException {
+    void shouldGetSubtaskToStringBeEqualToSubtaskToString() throws TasksIntersectException {
         String name = "Subtask Name";
         String description = "subtask";
         String epicId = "null";

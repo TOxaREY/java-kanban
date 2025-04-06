@@ -43,7 +43,7 @@ public class HttpTaskServerEpicsTest {
     }
 
     @Test
-    public void shouldGeEpicFromTaskManagerBeEqualToCreatedEpic() throws IOException, InterruptedException, NotFoundException {
+    public void shouldGeEpicFromTaskManagerBeEqualToCreatedEpic() throws IOException, InterruptedException {
         Task epic = new Epic("Test created", "epic");
         String epicJson = gson.toJson(epic);
 

@@ -87,7 +87,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getEpicById(Integer id) throws NotFoundException {
+    public Task getEpicById(Integer id) {
         if (epics.containsKey(id)) {
             Task epic = epics.get(id);
             historyManager.add(epic);
@@ -98,7 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getSubtaskById(Integer id) throws NotFoundException {
+    public Task getSubtaskById(Integer id) {
         if (subtasks.containsKey(id)) {
             Task subtask = subtasks.get(id);
             historyManager.add(subtask);
@@ -109,7 +109,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(Integer id) throws NotFoundException {
+    public Task getTaskById(Integer id) {
         if (tasks.containsKey(id)) {
             Task task = tasks.get(id);
             historyManager.add(task);
@@ -146,7 +146,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpicById(Integer id) throws NotFoundException {
+    public void deleteEpicById(Integer id) {
         if (epics.containsKey(id)) {
             if (!((Epic) epics.get(id)).getSubtasksId().isEmpty()) {
                 ((Epic) epics.get(id)).getSubtasksId().stream()
@@ -168,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtaskById(Integer id) throws NotFoundException {
+    public void deleteSubtaskById(Integer id) {
         if (subtasks.containsKey(id)) {
             epics.values().stream()
                     .filter(task -> ((Epic) task).getSubtasksId().contains(id))
@@ -185,7 +185,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTaskById(Integer id) throws NotFoundException {
+    public void deleteTaskById(Integer id) {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
             historyManager.remove(id);
@@ -200,7 +200,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getAllSubtasksByEpic(Task epic) throws NotFoundException {
+    public ArrayList<Task> getAllSubtasksByEpic(Task epic) {
         if (epics.containsKey(epic.getId())) {
             if (((Epic) epic).getSubtasksId().isEmpty()) {
                 return null;

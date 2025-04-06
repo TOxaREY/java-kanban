@@ -42,7 +42,7 @@ public class HttpTaskServerSubtasksTest {
     }
 
     @Test
-    public void shouldGeSubtaskFromTaskManagerBeEqualToCreatedSubtask() throws IOException, InterruptedException, NotFoundException {
+    public void shouldGeSubtaskFromTaskManagerBeEqualToCreatedSubtask() throws IOException, InterruptedException {
         Task subtask = new Subtask("Test created", "subtask", duration, startTime);
         String subtaskJson = gson.toJson(subtask);
 
@@ -65,7 +65,7 @@ public class HttpTaskServerSubtasksTest {
     }
 
     @Test
-    public void shouldGetSubtaskStatusBeEqualToUpdatedSubtaskStatus() throws IOException, InterruptedException, NotFoundException {
+    public void shouldGetSubtaskStatusBeEqualToUpdatedSubtaskStatus() throws IOException, InterruptedException {
         Task subtask = new Subtask("Test updated", "subtask", duration, startTime);
         String subtaskJson = gson.toJson(subtask);
 
@@ -421,7 +421,7 @@ public class HttpTaskServerSubtasksTest {
     }
 
     @Test
-    public void shouldGetSubtaskBeEqualToAddSubtaskInEpic() throws TasksIntersectException, IOException, InterruptedException, NotFoundException {
+    public void shouldGetSubtaskBeEqualToAddSubtaskInEpic() throws TasksIntersectException, IOException, InterruptedException {
         Task subtask = new Subtask("Test additions", "subtask", duration, startTime);
         Task epic = new Epic("Test additions", "epic");
         inMemoryTaskManager.createSubtask(subtask);

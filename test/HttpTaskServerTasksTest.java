@@ -41,7 +41,7 @@ public class HttpTaskServerTasksTest {
     }
 
     @Test
-    public void shouldGetTaskFromTaskManagerBeEqualToCreatedTask() throws IOException, InterruptedException, NotFoundException {
+    public void shouldGetTaskFromTaskManagerBeEqualToCreatedTask() throws IOException, InterruptedException {
         Task task = new Task("Test created", "task", duration, startTime);
         String taskJson = gson.toJson(task);
 
@@ -64,7 +64,7 @@ public class HttpTaskServerTasksTest {
     }
 
     @Test
-    public void shouldGetTaskStatusBeEqualToUpdatedTaskStatus() throws IOException, InterruptedException, NotFoundException {
+    public void shouldGetTaskStatusBeEqualToUpdatedTaskStatus() throws IOException, InterruptedException {
         Task task = new Task("Test updated", "task", duration, startTime);
         String taskJson = gson.toJson(task);
 

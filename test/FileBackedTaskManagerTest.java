@@ -70,7 +70,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSetUpdatedSaveTaskBeEqualGetUpdatedLoadTask() throws TasksIntersectException, NotFoundException {
+    void shouldSetUpdatedSaveTaskBeEqualGetUpdatedLoadTask() throws TasksIntersectException {
         Task task = new Task("Test Update", "task", duration, startTime);
         fileBackedTaskManager.createTask(task);
         task.setStatus(Status.DONE);
@@ -84,7 +84,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSetUpdatedSaveSubtaskBeEqualGetUpdatedLoadSubtask() throws TasksIntersectException, NotFoundException {
+    void shouldSetUpdatedSaveSubtaskBeEqualGetUpdatedLoadSubtask() throws TasksIntersectException {
         Task epic = new Epic("Test Update Subtask", "epic");
         Task subtask = new Subtask("Test Update", "subtask", duration, startTime);
         fileBackedTaskManager.createEpic(epic);
@@ -155,7 +155,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldReturnExceptionGetLoadSubtaskByIdAfterDeletingSubtaskAndSave() throws TasksIntersectException, NotFoundException {
+    void shouldReturnExceptionGetLoadSubtaskByIdAfterDeletingSubtaskAndSave() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         fileBackedTaskManager.createEpic(epic);
@@ -171,7 +171,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldReturnExceptionGetLoadEpicByIdAfterDeletingEpicAndSave() throws TasksIntersectException, NotFoundException {
+    void shouldReturnExceptionGetLoadEpicByIdAfterDeletingEpicAndSave() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
@@ -193,7 +193,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldReturnNotFoundExceptionAfterDeletingTaskAndSave() throws TasksIntersectException, NotFoundException {
+    void shouldReturnNotFoundExceptionAfterDeletingTaskAndSave() throws TasksIntersectException {
         Task task = new Task("Test Delete", "task", duration, startTime);
         fileBackedTaskManager.createTask(task);
         fileBackedTaskManager.deleteTaskById(task.getId());

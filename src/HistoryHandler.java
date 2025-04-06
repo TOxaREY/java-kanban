@@ -42,6 +42,4 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
         }
         return Endpoint.UNKNOWN;
     }
-
-    enum Endpoint { GET_HISTORY, UNKNOWN }
 }
