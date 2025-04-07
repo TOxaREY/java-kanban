@@ -6,18 +6,15 @@ import java.util.HashMap;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId = new ArrayList<>();
-    private Duration duration = Duration.ZERO;
-    private LocalDateTime startTime = null;
     private LocalDateTime endTime = null;
 
     public Epic(String name, String description) {
         super(name, description);
+        super.setDuration(Duration.ZERO);
     }
 
     public Epic(String name, String description, Duration duration, LocalDateTime startTime) {
-        super(name, description);
-        this.duration = duration;
-        this.startTime = startTime;
+        super(name, description, duration, startTime);
     }
 
     @Override
@@ -27,8 +24,9 @@ public class Epic extends Task {
                 ", description='" + super.getDescription() + '\'' +
                 ", id=" + super.getId() +
                 ", status=" + super.getStatus() +
-                ", duration=" + duration +
-                ", startTime=" + startTime +
+                ", duration=" + super.getDuration() +
+                ", startTime=" + super.getStartTime() +
+                ", endTime=" + endTime +
                 ", subtasksId=" + getSubtasksId() +
                 '}';
     }
@@ -56,22 +54,24 @@ public class Epic extends Task {
 
     public void updateEpicDateTimeFields(HashMap<Integer, Task> subtasks) {
         if (getSubtasksId().isEmpty()) {
-            duration = Duration.ZERO;
-            startTime = null;
+            super.setDuration(Duration.ZERO);
+            super.setStartTime(null);
             endTime = null;
         } else {
-            startTime = subtasksId.stream()
-                    .map(subtasks::get)
-                    .min(Comparator.comparing(Task::getStartTime))
-                    .orElseThrow()
-                    .getStartTime();
+            super.setStartTime(
+                    subtasksId.stream()
+                            .map(subtasks::get)
+                            .min(Comparator.comparing(Task::getStartTime))
+                            .orElseThrow()
+                            .getStartTime()
+            );
 
             endTime = subtasksId.stream()
                     .map(subtasks::get)
                     .max(Comparator.comparing(Task::getEndTime))
                     .orElseThrow()
                     .getEndTime();
-            duration = Duration.between(startTime, endTime);
+            super.setDuration(Duration.between(super.getStartTime(), endTime));
         }
     }
 }

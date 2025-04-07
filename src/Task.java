@@ -32,7 +32,7 @@ public class Task implements Cloneable {
         return description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -56,8 +56,16 @@ public class Task implements Cloneable {
         return startTime;
     }
 
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public Duration getDuration() {
         return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     @Override

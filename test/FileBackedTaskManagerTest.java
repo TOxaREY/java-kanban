@@ -62,7 +62,6 @@ public class FileBackedTaskManagerTest {
         Task epic = new Epic("Test Load", "epic");
         fileBackedTaskManager.createEpic(epic);
         Task setEpic = fileBackedTaskManager.getAllEpics().getFirst();
-        System.out.println(setEpic);
 
         FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file);
         Task getEpic = fileBackedTaskManager1.getAllEpics().getFirst();
@@ -156,7 +155,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldReturnNullGetLoadSubtaskByIdAfterDeletingSubtaskAndSave() throws TasksIntersectException {
+    void shouldReturnExceptionGetLoadSubtaskByIdAfterDeletingSubtaskAndSave() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         fileBackedTaskManager.createEpic(epic);
@@ -165,13 +164,14 @@ public class FileBackedTaskManagerTest {
         fileBackedTaskManager.deleteSubtaskById(subtask.getId());
 
         FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file);
-        Task getSubtask = fileBackedTaskManager1.getSubtaskById(subtask.getId());
 
-        assertNull(getSubtask, "Subtask не удалился.");
+        Exception getSubtask = assertThrows(NotFoundException.class, () -> fileBackedTaskManager1.getSubtaskById(subtask.getId()));
+
+        assertEquals("Подзадачи с id=1 не существует", getSubtask.getMessage(), "Subtask не удалился.");
     }
 
     @Test
-    void shouldReturnNullGetLoadEpicByIdAfterDeletingEpicAndSave() throws TasksIntersectException {
+    void shouldReturnExceptionGetLoadEpicByIdAfterDeletingEpicAndSave() throws TasksIntersectException {
         Task epic = new Epic("Test Delete", "epic");
         Task subtask = new Subtask("Test Delete", "subtask", duration, startTime);
         Task subtask1 = new Subtask("Test Delete", "subtask1", duration, startTime.plusMinutes(2));
@@ -186,20 +186,22 @@ public class FileBackedTaskManagerTest {
         fileBackedTaskManager.deleteEpicById(epic.getId());
 
         FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file);
-        Task getEpic = fileBackedTaskManager1.getEpicById(epic.getId());
 
-        assertNull(getEpic, "Epic не удалился.");
+        Exception getEpic = assertThrows(NotFoundException.class, () -> fileBackedTaskManager1.getEpicById(epic.getId()));
+
+        assertEquals("Эпика с id=0 не существует", getEpic.getMessage(), "Epic не удалился.");
     }
 
     @Test
-    void shouldReturnNullGetLoadTaskByIdAfterDeletingTaskAndSave() throws TasksIntersectException {
+    void shouldReturnNotFoundExceptionAfterDeletingTaskAndSave() throws TasksIntersectException {
         Task task = new Task("Test Delete", "task", duration, startTime);
         fileBackedTaskManager.createTask(task);
         fileBackedTaskManager.deleteTaskById(task.getId());
 
         FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file);
-        Task getTask = fileBackedTaskManager1.getTaskById(task.getId());
 
-        assertNull(getTask, "Task не удалился.");
+        Exception getTask = assertThrows(NotFoundException.class, () -> fileBackedTaskManager1.getTaskById(task.getId()));
+
+        assertEquals("Задачи с id=0 не существует", getTask.getMessage(), "Task не удалился.");
     }
 }
